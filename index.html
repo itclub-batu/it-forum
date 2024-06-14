@@ -29,13 +29,14 @@
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbz35lgkBopWOGuykrsqzbYYmLSr1ihISYuPbW8G6QwTbZw5Z4eavfkHh2J_dTQGRu1j/exec';
         const form = document.forms['contact-form'];
+        const submitButton = document.querySelector('.btn');
 
         form.addEventListener('submit', e => {
             e.preventDefault();
 
             const currentDateTime = new Date();
             const formattedDateTime = formatDate(currentDateTime);
-
+            submitButton.classList.add('loading');
             const formData = new FormData(form);
             formData.append('time', formattedDateTime);
 
@@ -49,11 +50,13 @@
                 })
                 .then(response => {
                     console.log('Form submission successful');
+                    submitButton.classList.remove('loading');
                     alert("The invitation will be sent to your email");
                     window.location.reload(); // Correct placement of reload
                 })
                 .catch(error => {
                     console.error('Error:', error);
+                    submitButton.classList.remove('loading');
                     alert("Sorry, an error has occurred. Please contact your leader.");
                 });
         });
@@ -156,5 +159,32 @@
     .btn:hover {
         background: rgba(145, 217, 255, 0.44);
         color: #000;
+    }
+    
+    .btn.loading {
+        color: transparent;
+    }
+    
+    .btn.loading::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 24px;
+        height: 24px;
+        border: 4px solid #fff;
+        border-top: 4px solid transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        transform: translate(-50%, -50%);
+    }
+    
+    @keyframes spin {
+        0% {
+            transform: translate(-50%, -50%) rotate(0deg);
+        }
+        100% {
+            transform: translate(-50%, -50%) rotate(360deg);
+        }
     }
 </style>
